@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DOM Practice</title>
+<style>
+  .product-card { padding:10px; margin:5px; }
+  .menu li { padding:5px; }
+  .highlight { background: yellow; }
+  .dark-mode { background:#222; color:white; }
+  .card { border:1px solid #ccc; padding:10px; margin:5px; }
+  .modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.6);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .modal {
+    background:white; padding:20px; border-radius:8px;
+  }
+  .swatch {
+    width:40px; height:40px; display:inline-block;
+    cursor:pointer; margin:5px;
+  }
+  #sortable li { padding:8px; border:1px solid #000; margin:4px; cursor:move; }
+</style>
+</head>
+<body>
+
+<h1 id="header-title">Original Title</h1>
+<script src="DOM&EVENTS.js"></script>
+
+<div class="product-card">Product 1</div>
+<div class="product-card">Product 2</div>
+
+<ul class="menu">
+  <li>Home</li>
+  <li>About</li>
+  <li>Contact</li>
+</ul>
+
+<div id="controls"></div>
+<div id="cart"></div>
+
+<img class="avatar" src="https://via.placeholder.com/100">
+
+<div class="article-body">
+  <p>Paragraph 1</p>
+  <p>Paragraph 2</p>
+</div>
+
+<button id="theme-toggle">Toggle Theme</button>
+
+<div class="card">
+  Card 1 <button data-action="delete">Delete</button>
+</div>
+
+<input id="todo-input" placeholder="Add todo">
+<button id="add-todo">Add</button>
+<ul id="todo-list"></ul>
+
+<ul id="users-list">
+  <li data-user-id="123">John</li>
+  <li data-user-id="456">Jane</li>
+</ul>
+
+<span id="count">0</span>
+<button id="plus">+1</button>
+<button id="minus">-1</button>
+
+<input id="search" placeholder="Search country">
+<ul>
+  <li class="country">Canada</li>
+  <li class="country">Brazil</li>
+  <li class="country">Germany</li>
+</ul>
+
+<div class="swatch" data-color="#e74c3c" style="background:#e74c3c"></div>
+<div class="swatch" data-color="#3498db" style="background:#3498db"></div>
+<div class="swatch" data-color="#2ecc71" style="background:#2ecc71"></div>
+<div class="swatch" data-color="#f1c40f" style="background:#f1c40f"></div>
+<div class="swatch" data-color="#9b59b6" style="background:#9b59b6"></div>
+<div class="swatch" data-color="#1abc9c" style="background:#1abc9c"></div>
+
+<ul id="sortable">
+  <li draggable="true">Item 1</li>
+  <li draggable="true">Item 2</li>
+  <li draggable="true">Item 3</li>
+</ul>
+
+<button id="open-modal">Open Modal</button>
+
+<script>
+// Easy 1
+document.getElementById("header-title").textContent = "My Awesome Page";
+
+// Easy 2
+document.querySelectorAll(".product-card")
+  .forEach(card => card.style.border = "2px solid red");
+
+// Easy 3
+document.querySelectorAll(".menu li")
+  .forEach(li => li.style.backgroundColor = "lightblue");
+
+// Easy 4
+const btn = document.createElement("button");
+btn.textContent = "Click me!";
+document.getElementById("controls").appendChild(btn);
+
+// Medium 5
+const item = document.createElement("div");
+item.className = "item";
+item.innerHTML = "<span>Apple</span><button>Remove</button>";
+document.getElementById("cart").appendChild(item);
+
+// Medium 6
+document.querySelector(".avatar").src =
+  "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d";
+
+// Medium 7
+document.querySelectorAll(".article-body > p")
+  .forEach(p => p.classList.add("highlight"));
+
+// Medium 8
+document.getElementById("theme-toggle")
+  .addEventListener("click", () =>
+    document.body.classList.toggle("dark-mode"));
+
+// Medium 9
+document.addEventListener("click", e => {
+  if (e.target.matches('[data-action="delete"]')) {
+    e.target.closest(".card").remove();
+  }
+});
+
+// Medium-Hard 10
+document.getElementById("add-todo").addEventListener("click", () => {
+  const input = document.getElementById("todo-input");
+  if (!input.value.trim()) return;
+  const li = document.createElement("li");
+  li.innerHTML = `${input.value} <button>Delete</button>`;
+  li.querySelector("button").addEventListener("click", () => li.remove());
+  document.getElementById("todo-list").appendChild(li);
+  input.value = "";
+});
+
+// Hard 11
+document.getElementById("users-list")
+  .addEventListener("click", e => {
+    if (e.target.tagName === "LI") {
+      console.log("Clicked user ID:", e.target.dataset.userId);
+    }
+});
+
+// Hard 12
+let count = 0;
+document.getElementById("plus").onclick = () => {
+  count++;
+  document.getElementById("count").textContent = count;
+};
+document.getElementById("minus").onclick = () => {
+  if (count > 0) count--;
+  document.getElementById("count").textContent = count;
+};
+
+// Hard 13
+document.getElementById("search")
+  .addEventListener("input", e => {
+    const value = e.target.value.toLowerCase();
+    document.querySelectorAll(".country")
+      .forEach(li => {
+        li.style.display =
+          li.textContent.toLowerCase().includes(value)
+            ? ""
+            : "none";
+      });
+});
+
+// Hard 14
+document.querySelectorAll(".swatch")
+  .forEach(swatch => {
+    swatch.addEventListener("click", () => {
+      document.body.style.backgroundColor = swatch.dataset.color;
+    });
+});
+
+// Hard 15
+let dragged;
+document.querySelectorAll("#sortable li").forEach(li => {
+  li.addEventListener("dragstart", e => dragged = li);
+  li.addEventListener("dragover", e => e.preventDefault());
+  li.addEventListener("drop", e => {
+    e.preventDefault();
+    if (dragged !== li) {
+      const temp = li.textContent;
+      li.textContent = dragged.textContent;
+      dragged.textContent = temp;
+    }
+  });
+});
+
+// Hard 16
+document.getElementById("open-modal")
+  .addEventListener("click", () => {
+    const overlay = document.createElement("div");
+    overlay.className = "modal-overlay";
+    overlay.innerHTML = `
+      <div class="modal">
+        <h2>Modal Title</h2>
+        <p>This is a modal dialog.</p>
+        <button id="close-modal">Close</button>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener("click", e => {
+      if (e.target.classList.contains("modal-overlay")
+          || e.target.id === "close-modal") {
+        overlay.remove();
+      }
+    });
+});
+</script>
+
+</body>
+</html>
