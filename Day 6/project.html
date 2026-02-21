@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Friends Birthday List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            width: 400px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            width: 80%;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🎉 Friends Birthday List 🎉</h1>
+
+        <ul id="birthdayList">
+            <li>John - 12 March</li>
+            <li>Sarah - 25 June</li>
+            <li>Mike - 5 September</li>
+        </ul>
+
+        <h3>Add New Birthday</h3>
+        <input type="text" id="name" placeholder="Friend's Name">
+        <input type="date" id="date">
+        <br>
+        <button onclick="addBirthday()">Add</button>
+    </div>
+
+    <script>
+        function addBirthday() {
+            let name = document.getElementById("name").value;
+            let date = document.getElementById("date").value;
+
+            if (name === "" || date === "") {
+                alert("Please enter both name and date!");
+                return;
+            }
+
+            let ul = document.getElementById("birthdayList");
+            let li = document.createElement("li");
+            li.textContent = name + " - " + date;
+            ul.appendChild(li);
+
+            document.getElementById("name").value = "";
+            document.getElementById("date").value = "";
+        }
+    </script>
+
+</body>
+</html>
